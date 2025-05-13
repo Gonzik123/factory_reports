@@ -1,0 +1,17 @@
+# Файлы окружения
+.env
+
+# тесты
+test.py
+
+# логи
+.log
+
+# Виртуальное окружение
+venv/
+.venv/
+
+# Байткод Python
+__pycache__/
+*.py[cod]
+*$py.class
