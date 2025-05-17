@@ -7,7 +7,7 @@ from bot.utils import setup_logger
 from bot.db.crud import check_user
 from bot.db.session import SessionLocal
 from bot.keyboards import only_reg_kb
-
+from bot.handlers.states import NewUser
 
 setup_logger()
 router = Router()
@@ -43,4 +43,6 @@ async def handler_login(callback: CallbackQuery):
 
 @router.callback_query(F.data == 'registry')
 async def handler_register(callback: CallbackQuery, state: FSMContext):
-    pass
+    await state.clear()
+    user_id = callback.from_user.id
+    
