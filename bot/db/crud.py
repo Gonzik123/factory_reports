@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from bot.utils import setup_logger
 
 
-# from bot.db.session import SessionLocal
+from bot.db.session import SessionLocal
 
 from bot.db.models import Users
 
@@ -38,4 +38,22 @@ async def add_user(
         role='inspector',
         ):
     '''Добавление пользователя в бд'''
-    pass
+    async with SessionLocal() as session:
+        new_user = Users(
+            user_id=user_id,
+            first_name=first_name,
+            last_name=last_name,
+            nicname=nicname
+        )
+        session.add(new_user)
+
+        try:
+            await session.commit()
+            return 'Вы были успешно добавлены в БД.'
+        except Exception as e:
+            await session.rollback()
+            print(
+                f'У пользователя {user_id}'
+                f'произошла ошибка при создание учётной записи - {e}'
+                )
+            return 'Произошла ошибка. Обратитесь в тех. поддержку.'
