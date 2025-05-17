@@ -4,12 +4,13 @@ from sqlalchemy.dialects.postgresql import JSONB
 
 import enum
 from datetime import datetime
-from zoneinfo import ZoneInfo
+import pytz
+
 
 Base = declarative_base()
 
 def now_msk():
-    return datetime.now(ZoneInfo("Europe/Moscow"))
+    return datetime.now(pytz.timezone('Europe/Moscow'))
 
 class UserRole(enum.Enum):
     inspector = "inspector"
@@ -26,5 +27,5 @@ class Users(Base):
     role = Column(Enum(UserRole, name='user_role', native_enum=True, create_type=False))
     banned = Column(Boolean, default=False)
     ban_reason = Column (Text)
-    created_at = Column(DateTime, default=now_msk())
-    update_at = Column(DateTime, default=now_msk(), onupdate=now_msk())
+    created_at = Column(DateTime(timezone=True), default=now_msk)
+    updated_at = Column(DateTime(timezone=True), default=now_msk, onupdate=now_msk)

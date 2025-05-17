@@ -2,14 +2,23 @@ from sqlalchemy import select
 # from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+import logging
 from bot.utils import setup_logger
-
 
 from bot.db.session import SessionLocal
 
 from bot.db.models import Users
 
+from datetime import datetime
+import pytz
+
+
 setup_logger()
+logger = logging.getLogger(__name__)
+
+
+def now_msk():
+    return datetime.now(pytz.timezone('Europe/Moscow')).strftime("%Y-%m-%d %H:%M:%S")
 
 
 async def check_user(session: AsyncSession, user_id: int):
@@ -34,7 +43,7 @@ async def add_user(
         user_id: int,
         first_name: str,
         last_name: str,
-        nicname: str,
+        username: str,
         role='inspector',
         ):
     '''Добавление пользователя в бд'''
@@ -43,17 +52,16 @@ async def add_user(
             user_id=user_id,
             first_name=first_name,
             last_name=last_name,
-            nicname=nicname
+            username=username
         )
         session.add(new_user)
 
         try:
             await session.commit()
-            return 'Вы были успешно добавлены в БД.'
+            return True
         except Exception as e:
             await session.rollback()
-            print(
-                f'У пользователя {user_id}'
-                f'произошла ошибка при создание учётной записи - {e}'
-                )
-            return 'Произошла ошибка. Обратитесь в тех. поддержку.'
+            logger.error(f'Не удалось создать учётную запись для user_id={user_id}'
+                         f'По причине - {e}')
+
+            return False
