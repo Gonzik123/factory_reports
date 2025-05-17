@@ -1,13 +1,15 @@
-from sqlalchemy import select, func
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy import select
+# from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot.utils import setup_logger
-setup_logger()
 
-from bot.db.session import SessionLocal
+
+# from bot.db.session import SessionLocal
 
 from bot.db.models import Users
+
+setup_logger()
 
 
 async def check_user(session: AsyncSession, user_id: int):
@@ -25,14 +27,15 @@ async def check_user(session: AsyncSession, user_id: int):
         return True
     else:
         return None
-    
+
 
 async def add_user(
-        session: AsyncSession, 
-        user_id: int, 
-        first_name: str, 
+        session: AsyncSession,
+        user_id: int,
+        first_name: str,
         last_name: str,
         nicname: str,
         role='inspector',
         ):
+    '''Добавление пользователя в бд'''
     pass
